@@ -8,12 +8,40 @@ module.exports = (db) => {
         console.error(err);
         res
           .status(500)
-          .send("Erreur lors de la récupération des utilisateurs.");
+          .json(
+            "Une erreur s'est produite lors de la récupération des annonces."
+          );
       } else {
         res.json(rows);
       }
     });
   });
+
+  // Récupérer un utilisateur par ID
+  router.get("/:id", (req, res) => {
+    const advertisementsId = req.params.id;
+
+    db.get(
+      "SELECT * FROM Advertisements WHERE id = ?",
+      [advertisementsId],
+      (err, row) => {
+        if (err) {
+          return res
+            .status(500)
+            .json(
+              "Une erreur s'est produite lors de la récupération des annonces par id."
+            );
+        }
+        if (!row) {
+          return res.status(404).json({
+            error: `Utilisateur avec l'ID ${advertisementsId} non trouvé.`,
+          });
+        }
+        res.json(row);
+      }
+    );
+  });
+
   router.post("/create", (req, res) => {
     const { title, description, user_id, plants_id, location } = req.body;
     db.run(
