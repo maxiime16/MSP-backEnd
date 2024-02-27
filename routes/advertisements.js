@@ -17,7 +17,7 @@ module.exports = (db) => {
   router.post("/create", (req, res) => {
     const { title, description, user_id, plants_id, location } = req.body;
     db.run(
-      "INSERT INTO advertisements (title, description, user_id, plants_id, location) VALUES (?, ?, ?, ?, ?)",
+      "INSERT INTO advertisements (title, description, user_id, plants_id, longitude, latitude) VALUES (?, ?, ?, ?, ?, ?)",
       [title, description, user_id, plants_id, location],
       function (err) {
         if (err) {
@@ -37,11 +37,11 @@ module.exports = (db) => {
   // Mettre à jour une l'annonce par ID
   router.put("/:id/update", (req, res) => {
     const advertisementsId = req.params.id;
-    const { title, description, user_id, plants_id, location } = req.body;
+    const { title, description, user_id, plants_id, longitude, latitude } = req.body;
 
     db.run(
-      "UPDATE advertisements SET title = ?, description = ?, user_id = ?, plants_id = ?, location = ? WHERE id = ?",
-      [title, description, user_id, plants_id, location, advertisementsId],
+      "UPDATE advertisements SET title = ?, description = ?, user_id = ?, plants_id = ?, longitude = ?, latitude= ? WHERE id = ?",
+      [title, description, user_id, plants_id, longitude,latitude, advertisementsId],
       (err) => {
         if (err) {
           console.error(err);
@@ -61,16 +61,12 @@ module.exports = (db) => {
     );
   });
 
-  // Route pour récupérer les annonces en fonction de la catégorie principale de la plante
-  router.get("/category/:categoryName", (req, res) => {
-    const categoryName = req.params.categoryName;
+  // Route pour récupérer les annonces en fonction de la catégorie
+  router.get("/category/:categoryId", (req, res) => {
+    const categoryId = req.params.categoryId;
     db.all(
-      `SELECT Advertisements.id, Advertisements.title, Advertisements.description
-       FROM Advertisements
-       JOIN Plants ON Advertisements.plants_id = Plants.id
-       JOIN Category ON Plants.category_id = Category.id
-       WHERE Category.id = ?`,
-      [categoryName],
+      `SELECT * FROM Advertisements WHERE category_id = ?;`,
+      [categoryId],
       (err, rows) => {
         if (err) {
           console.error(err);

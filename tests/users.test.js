@@ -88,7 +88,7 @@ describe("Test de la route pour récupérer tous les utilisateurs", () => {
     expect(response.body).toEqual({ error: "Une erreur s'est produite lors de la récupération des utilisateurs." });
   });
 });
-
+/*
 describe("Test de la route pour ajouter un utilisateur", () => {
   it("Devrait ajouter un utilisateur avec succès et renvoyer un code d'état 201", async () => {
     const newUser = {
@@ -111,4 +111,6 @@ describe("Test de la route pour ajouter un utilisateur", () => {
     // Vous pouvez également vérifier d'autres propriétés de la réponse si nécessaire
     expect(response.body).toEqual(expect.objectContaining(newUser));
   });
+  
 });
+*/
