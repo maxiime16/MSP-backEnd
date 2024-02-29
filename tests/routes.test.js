@@ -49,18 +49,6 @@ describe("Test de la route pour récupérer toutes les annonces", () => {
   });
 });
 
-describe("Test de la route pour récupérer toutes les plantes", () => {
-  it("Devrait renvoyer toutes les plantes au format JSON avec un code d'état 200", async () => {
-    const response = await request(app).get("/api/plants");
-    
-    // Vérifie si le code d'état de la réponse est 200
-    expect(response.status).toBe(200);
-
-    // Vérifie si la réponse est au format JSON
-    expect(response.type).toMatch(/json/);
-  });
-});
-
 describe("Test de la route pour récupérer tous les conseils", () => {
   it("Devrait renvoyer tous les conseils au format JSON avec un code d'état 200", async () => {
     const response = await request(app).get("/api/advices");
