@@ -43,10 +43,10 @@ module.exports = (db) => {
   });
 
   router.post("/create", (req, res) => {
-    const { title, description, user_id, plants_id, location } = req.body;
+    const { title, description, user_id, longitude, latitude, category_id, sub_category_id, start_date, end_date, city, postal_code } = req.body;
     db.run(
-      "INSERT INTO advertisements (title, description, user_id, plants_id, location) VALUES (?, ?, ?, ?, ?)",
-      [title, description, user_id, plants_id, location],
+      "INSERT INTO Advertisements (title, description, user_id, longitude, latitude, category_id, sub_category_id, start_date, end_date, city, postal_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      [title, description, user_id, longitude, latitude, category_id, sub_category_id, start_date, end_date, city, postal_code],
       function (err) {
         if (err) {
           console.error(err);
@@ -89,26 +89,22 @@ module.exports = (db) => {
     );
   });
 
-  // Route pour récupérer les annonces en fonction de la catégorie principale de la plante
-  router.get("/category/:categoryName", (req, res) => {
-    const categoryName = req.params.categoryName;
-    db.all(
-      `SELECT Advertisements.id, Advertisements.title, Advertisements.description
-       FROM Advertisements
-       JOIN Plants ON Advertisements.plants_id = Plants.id
-       JOIN Category ON Plants.category_id = Category.id
-       WHERE Category.id = ?`,
-      [categoryName],
-      (err, rows) => {
-        if (err) {
-          console.error(err);
-          res.status(500).send("Erreur lors de la récupération des annonces.");
-        } else {
-          res.json(rows);
-        }
+// Route pour récupérer les annonces en fonction de la catégorie
+router.get("/category/:categoryId", (req, res) => {
+  const categoryId = req.params.categoryId;
+  db.all(
+    `SELECT * FROM Advertisements WHERE category_id = ?;`,
+    [categoryId],
+    (err, rows) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send("Erreur lors de la récupération des annonces.");
+      } else {
+        res.json(rows);
       }
-    );
-  });
+    }
+  );
+});
 
-  return router;
+return router;
 };

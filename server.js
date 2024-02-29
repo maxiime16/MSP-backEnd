@@ -38,6 +38,10 @@ app.use("/api/plants", plantsRoutes);
 const advicesRoutes = require("./routes/advices")(db);
 app.use("/api/", advicesRoutes);
 
+const imagesRoutes = require("./routes/images")(db);
+app.use("/api/images", imagesRoutes);
+
+
 
 // Exporter l'application pour les tests
 module.exports = app;
