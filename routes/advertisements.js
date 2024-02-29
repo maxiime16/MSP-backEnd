@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+//test
+
 module.exports = (db) => {
   router.get("/", (_, res) => {
     db.all("SELECT * FROM advertisements", (err, rows) => {
@@ -89,22 +91,22 @@ module.exports = (db) => {
     );
   });
 
-// Route pour récupérer les annonces en fonction de la catégorie
-router.get("/category/:categoryId", (req, res) => {
-  const categoryId = req.params.categoryId;
-  db.all(
-    `SELECT * FROM Advertisements WHERE category_id = ?;`,
-    [categoryId],
-    (err, rows) => {
-      if (err) {
-        console.error(err);
-        res.status(500).send("Erreur lors de la récupération des annonces.");
-      } else {
-        res.json(rows);
+  // Route pour récupérer les annonces en fonction de la catégorie
+  router.get("/category/:categoryId", (req, res) => {
+    const categoryId = req.params.categoryId;
+    db.all(
+      `SELECT * FROM Advertisements WHERE category_id = ?;`,
+      [categoryId],
+      (err, rows) => {
+        if (err) {
+          console.error(err);
+          res.status(500).send("Erreur lors de la récupération des annonces.");
+        } else {
+          res.json(rows);
+        }
       }
-    }
-  );
-});
+    );
+  });
 
 return router;
 };
