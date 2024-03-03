@@ -6,7 +6,7 @@ const usersRoute = require("../routes/users");
 const mockDB = {
   get: jest.fn(),
   all: jest.fn(),
-  post: jest.fn(),
+  run: jest.fn(),
 };
 
 // Mock de la réponse de la base de données pour cet ensemble de tests
@@ -88,7 +88,7 @@ describe("Test de la route pour récupérer tous les utilisateurs", () => {
     expect(response.body).toEqual({ error: "Une erreur s'est produite lors de la récupération des utilisateurs." });
   });
 });
-/*
+
 describe("Test de la route pour ajouter un utilisateur", () => {
   it("Devrait ajouter un utilisateur avec succès et renvoyer un code d'état 201", async () => {
     const newUser = {
@@ -100,6 +100,10 @@ describe("Test de la route pour ajouter un utilisateur", () => {
       "address_postal_code": "10001",
       "address_street": "123 Main St",
     };
+
+    mockDB.run.mockImplementation((query, params, callback) => {
+      callback(null); // Aucune erreur, la mise à jour réussit
+    });
   
     const response = await request(app)
       .post("/api/users")
@@ -108,9 +112,8 @@ describe("Test de la route pour ajouter un utilisateur", () => {
     expect(response.status).toBe(201);
     expect(response.type).toMatch(/json/);
 
-    // Vous pouvez également vérifier d'autres propriétés de la réponse si nécessaire
-    expect(response.body).toEqual(expect.objectContaining(newUser));
+    // Vérifiez l'objet reçu sans la propriété "password"
+    const { password, ...expectedUser } = newUser;
+    expect(response.body).toEqual(expect.objectContaining(expectedUser));
   });
-  
 });
-*/
