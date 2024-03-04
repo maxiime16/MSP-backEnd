@@ -19,7 +19,7 @@ module.exports = (db) => {
     });
   });
 
-  // Récupérer un utilisateur par ID
+  // Récupérer une annonce par ID
   router.get("/:id", (req, res) => {
     const advertisementsId = req.params.id;
 

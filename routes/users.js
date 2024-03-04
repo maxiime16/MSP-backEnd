@@ -94,6 +94,20 @@ module.exports = (db) => {
     );
   });
 
+  //check login/mdp 
+  router.get("/log_infos/:email", (req, res) => {
+    const email = req.params.email;
+  
+    db.all("SELECT email, password, first_name, last_name, id FROM users WHERE email = ?", [email], (err, rows) => {
+      if (err) {
+        return res.status(500).json({
+          error: "Une erreur s'est produite lors de la récupération des utilisateurs.",
+        });
+      }
+      res.json(rows);
+    });
+  });
+
 
   // Suppression d'un utilisateur par ID
   router.delete("/:id", (req, res) => {
@@ -119,59 +133,6 @@ module.exports = (db) => {
     });
   });
 
-
-  //verification couple email/mot de passe
-  router.post("/login", (req, res) => {
-    const { email, password } = req.body;
-    console.log(test)
-    console.log("Email et mot de passe reçus :", email, password);
-
-    // Vérification si l'e-mail existe dans la base de données
-    db.get(
-      "SELECT * FROM Users WHERE email = ?",
-      [email],
-      (err, user) => {
-        if (err) {
-          return res.status(500).json({
-            error:
-              "Une erreur s'est produite lors de la vérification de l'e-mail.",
-          });
-        }
-  
-        if (!user) {
-          // L'utilisateur avec cet e-mail n'existe pas
-          return res.status(404).json({
-            error: "Utilisateur non trouvé. Veuillez vérifier vos informations d'identification.",
-          });
-        }
-  
-        // Vérification du mot de passe en utilisant une fonction de hachage sécurisée (bcrypt)
-        bcrypt.compare(password, user.password, (err, result) => {
-          if (err) {
-            return res.status(500).json({
-              error: "Une erreur s'est produite lors de la vérification du mot de passe.",
-            });
-          }
-  
-          if (!result) {
-            // Le mot de passe est incorrect
-            return res.status(401).json({
-              error: "Mot de passe incorrect. Veuillez vérifier vos informations d'identification.",
-            });
-          }
-  
-          // Le couple email/mot de passe est correct, renvoie les informations de l'utilisateur
-          res.status(200).json({
-            id: user.id,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            email: user.email,
-            // Ajoutez d'autres informations utilisateur que vous souhaitez renvoyer
-          });
-        });
-      }
-    );
-  });
 
   return router;
 };

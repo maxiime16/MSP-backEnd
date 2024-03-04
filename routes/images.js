@@ -26,6 +26,29 @@ module.exports = (db) => {
   );
 });
 
+// Récupérer toutes les images par advertisement_id
+router.get("/all/:advertisementId", (req, res) => {
+  const advertisementId = req.params.advertisementId;
+
+  db.all(
+    "SELECT id, image FROM images WHERE advertisement_id = ?",
+    [advertisementId],
+    (err, rows) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send("Erreur lors de la récupération des images.");
+      } else {
+        if (rows.length > 0) {
+          // Envoyer les données de toutes les images en tant que réponse
+          res.json(rows);
+        } else {
+          res.status(404).send(`Aucune image trouvée pour l'annonce avec l'ID ${advertisementId}.`);
+        }
+      }
+    }
+  );
+});
+
 
 // Ajouter une image à une annonce
 router.post("/upload/:advertisementId", (req, res) => {
