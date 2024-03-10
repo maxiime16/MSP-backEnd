@@ -3,7 +3,7 @@ const router = express.Router();
 
 module.exports = (db) => {
   // Récupération de tout les users
-  router.get("/", (_, res) => {
+  router.get("/all", (_, res) => {
     db.all("SELECT * FROM users", (err, rows) => {
       if (err) {
         return res

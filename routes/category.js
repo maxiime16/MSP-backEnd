@@ -3,11 +3,11 @@ const router = express.Router();
 
 module.exports = (db) => {
   // Récupérer toutes les catégories
-  router.get("/", (_, res) => {
+  router.get("/all", (_, res) => {
     db.all("SELECT * FROM category", (err, rows) => {
       if (err) {
         console.error(err);
-        res.status(500).send("Erreur lors de la récupération des catégories.");
+        res.status(500).json({error: "Erreur lors de la récupération des catégories."});
       } else {
         res.json(rows);
       }
@@ -23,14 +23,14 @@ module.exports = (db) => {
         console.error(err);
         res
           .status(500)
-          .send(
-            `Erreur lors de la récupération de l'utilisateur avec l'ID ${categId}.`
+          .json(
+            `Erreur lors de la récupération de l'utilisateur avec cette id.`
           );
       } else {
         if (row) {
           res.json(row);
         } else {
-          res.status(404).send(`Utilisateur avec l'ID ${categId} non trouvé.`);
+          res.status(404).json(`Erreur la categorie est introuvable`);
         }
       }
     });

@@ -68,7 +68,7 @@ describe("Test de la route pour récupérer tous les utilisateurs", () => {
       callback(null, mockUsers);
     });
 
-    const response = await request(app).get("/api/users");
+    const response = await request(app).get("/api/users/all");
 
     expect(response.status).toBe(200);
     expect(response.type).toMatch(/json/);
@@ -81,7 +81,7 @@ describe("Test de la route pour récupérer tous les utilisateurs", () => {
       callback(new Error("Erreur de base de données")); // Simuler une erreur de base de données
     });
 
-    const response = await request(app).get("/api/users");
+    const response = await request(app).get("/api/users/all");
 
     expect(response.status).toBe(500);
     expect(response.type).toMatch(/json/);

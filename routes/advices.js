@@ -3,11 +3,13 @@ const router = express.Router();
 
 module.exports = (db) => {
   // Récupérer tout les conseils
-  router.get("/advices", (_, res) => {
+  router.get("/all", (_, res) => {
     db.all("SELECT * FROM advice", (err, rows) => {
       if (err) {
         console.error(err);
-        res.status(500).send("Erreur lors de la récupération des conseils.");
+        res
+          .status(500)
+          .json({ error: "Erreur lors de la récupération des conseils." });
       } else {
         res.json(rows);
       }
@@ -23,9 +25,9 @@ module.exports = (db) => {
         console.error(err);
         res
           .status(500)
-          .send(
-            `Erreur lors de la récupération de la plante avec l'ID ${adviceId}.`
-          );
+          .json({
+            error: `Une erreur s'est produite lors de la récupération des annonces par id.`,
+          });
       } else {
         if (row) {
           res.json(row);
@@ -36,58 +38,22 @@ module.exports = (db) => {
     });
   });
 
-  // Récupérer les conseils pour une plante spécifique
-  router.get("plants/:id/advice", (req, res) => {
-    const plantId = req.params.id;
+  // Récupérer les conseils pour une annonce en fonction de l'annonce 
+  router.get("/advertisements/:id", (req, res) => {
+    const advertisementId = req.params.id;
 
     db.all(
-      "SELECT * FROM Advice WHERE plant_id = ?",
-      [plantId],
+      "SELECT * FROM Advice WHERE advertisement_id = ?",
+      [advertisementId],
       (err, rows) => {
         if (err) {
           console.error(err);
-          res
-            .status(500)
-            .send(
-              `Erreur lors de la récupération des conseils pour la plante avec l'ID ${plantId}.`
-            );
+          res.status(500).json("Erreur lors de la récupération des conseils.");
         } else {
-          res.json(rows);
+          res.status(200).json(rows);
         }
       }
     );
   });
-
-  // Récupérer un conseil spécifique pour une plante spécifique
-  router.get("plants/:idPlant/advice/:id", (req, res) => {
-    const plantId = req.params.idPlant;
-    const adviceId = req.params.id;
-
-    db.get(
-      "SELECT * FROM Advice WHERE plant_id = ? AND id = ?",
-      [plantId, adviceId],
-      (err, row) => {
-        if (err) {
-          console.error(err);
-          res
-            .status(500)
-            .send(
-              `Erreur lors de la récupération du conseil pour la plante avec l'ID ${plantId} et l'ID du conseil ${adviceId}.`
-            );
-        } else {
-          if (row) {
-            res.json(row);
-          } else {
-            res
-              .status(404)
-              .send(
-                `Conseil avec l'ID ${adviceId} pour la plante avec l'ID ${plantId} non trouvé.`
-              );
-          }
-        }
-      }
-    );
-  });
-
   return router;
 };

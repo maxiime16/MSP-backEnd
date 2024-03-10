@@ -3,13 +3,13 @@ const router = express.Router();
 
 module.exports = (db) => {
   // Récupérer toutes les sous-catégories
-  router.get("/sub_category", (_, res) => {
+  router.get("/all", (_, res) => {
     db.all("SELECT * FROM sub_category", (err, rows) => {
       if (err) {
         console.error(err);
         res
           .status(500)
-          .send("Erreur lors de la récupération des sous-catégories.");
+          .json({error: "Erreur lors de la récupération des sous-catégories."});
       } else {
         res.json(rows);
       }
@@ -28,8 +28,8 @@ module.exports = (db) => {
           console.error(err);
           res
             .status(500)
-            .send(
-              `Erreur lors de la récupération de l'utilisateur avec l'ID ${sub_categId}.`
+            .json(
+              `Erreur lors de la récupération de la sous catégorie avec cette ID.`
             );
         } else {
           if (row) {
@@ -37,7 +37,7 @@ module.exports = (db) => {
           } else {
             res
               .status(404)
-              .send(`Utilisateur avec l'ID ${sub_categId} non trouvé.`);
+              .json(`la sous catégorie avec cette Id non trouvé.`);
           }
         }
       }

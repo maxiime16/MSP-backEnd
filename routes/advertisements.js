@@ -1,8 +1,10 @@
 const express = require("express");
+const category = require("./category");
+const sub_category = require("./sub_category");
 const router = express.Router();
 
 module.exports = (db) => {
-  router.get("/", (_, res) => {
+  router.get("/all", (_, res) => {
     db.all("SELECT * FROM advertisements", (err, rows) => {
       if (err) {
         console.error(err);
@@ -33,6 +35,7 @@ module.exports = (db) => {
             );
         }
         if (!row) {
+          console.error(err);
           return res.status(404).json({
             error: `Utilisateur avec l'ID ${advertisementsId} non trouvé.`,
           });
@@ -43,19 +46,22 @@ module.exports = (db) => {
   });
 
   router.post("/create", (req, res) => {
-    const { title, description, user_id, plants_id, location } = req.body;
+    const { title, description, user_id, longitude, latitude, category_id, sub_category_id } = req.body;
     db.run(
-      "INSERT INTO advertisements (title, description, user_id, plants_id, longitude, latitude) VALUES (?, ?, ?, ?, ?, ?)",
-      [title, description, user_id, plants_id, location],
+      "INSERT INTO advertisements (title, description, user_id, longitude, latitude, category_id, sub_category_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [title, description, user_id, longitude, latitude, category_id, sub_category_id],
       function (err) {
         if (err) {
-          console.error(err);
-          res.status(500).send("Erreur lors de l'insertion de l'annonce.");
+          console.error("Erreur lors de l'insertion de l'annonce :", err.message);
+        res.status(500).json({
+          error: "Erreur lors de l'insertion de l'annonce.",
+          details: err.message
+        });
         } else {
           // Renvoyer l'ID de la nouvelle annonce insérée
           res.json({
             id: this.lastID,
-            message: "Annonce insérée avec succès.",
+            message:"Annonce insérée avec succès.",
           });
         }
       }
@@ -88,23 +94,21 @@ module.exports = (db) => {
       }
     );
   });
+// Récupérer un utilisateur par ID
+router.get("/category/:categoryId", (req, res) => {
+  const categoryId = req.params.categoryId;
 
-  // Route pour récupérer les annonces en fonction de la catégorie
-  router.get("/category/:categoryId", (req, res) => {
-    const categoryId = req.params.categoryId;
-    db.all(
-      `SELECT * FROM Advertisements WHERE category_id = ?;`,
+  db.all(
+      "SELECT * FROM Advertisements WHERE category_id = ?;",
       [categoryId],
       (err, rows) => {
-        if (err) {
-          console.error(err);
-          res.status(500).send("Erreur lors de la récupération des annonces.");
-        } else {
-          res.json(rows);
-        }
+          if (err) {
+              res.status(500).json({ error: "Une erreur s'est produite lors de la récupération des annonces par id." });
+          } else {
+              res.status(200).json(rows);
+          }
       }
-    );
-  });
-
+  );
+});
   return router;
 };
